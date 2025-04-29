@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFetch } from "./hook/useFetch";
 import "./App.css";
 
@@ -7,7 +7,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0.0);
-  const {data: items} = useFetch(url)
+  const { data: items, httpConfig, loading } = useFetch(url);
 
   // Resgatar dados
   // useeffect executa 4 vezes ;-;
@@ -29,20 +29,21 @@ function App() {
       name,
     };
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(product),
-    });
+    // const res = await fetch(url, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(product),
+    // });
 
-    const addedProd = await res.json();
+    // const addedProd = await res.json();
 
     // carregamento dinamico
-    setProducts((prev) => [...prev, addedProd]);
-    setName("")
-setPrice("0.0")
+    // setProducts((prev) => [...prev, addedProd]);
+    httpConfig(product, "POST");
+    setName("");
+    setPrice("0.0");
   };
 
   return (
@@ -58,11 +59,13 @@ setPrice("0.0")
               name="name"
               id="name"
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </label>
           <label>
             Preço:{" "}
             <input
+              required
               type="number"
               value={price}
               name="preco"
@@ -72,10 +75,12 @@ setPrice("0.0")
               onChange={(e) => setPrice(e.target.value)}
             />
           </label>
-          <button>Sub</button>
+          {!loading && <button>Enviar</button>}
+          {loading && (<button disabled>Aguarde</button>)}
         </form>
       </div>
-      {items && (
+      {loading && <p>Carregando dados...</p>}
+      {items && !loading && (
         <table>
           <thead>
             <tr>
@@ -95,7 +100,6 @@ setPrice("0.0")
           </tbody>
         </table>
       )}
-      
     </div>
   );
 }
