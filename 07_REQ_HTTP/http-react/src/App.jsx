@@ -4,10 +4,10 @@ import "./App.css";
 
 function App() {
   const url = "http://localhost:3001/products";
-  const [products, setProducts] = useState([]);
+  const [idProduct, setIdProduct] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0.0);
-  const { data: items, httpConfig, loading } = useFetch(url);
+  const { data: items, httpConfig, loading, error, deleteProduct } = useFetch(url);
 
   // Resgatar dados
   // useeffect executa 4 vezes ;-;
@@ -22,6 +22,10 @@ function App() {
   // console.log(products);
 
   // add dados
+  const handleDelete = async (id) => {
+    httpConfig(null, "DELETE", id)
+  }
+
   const handleSubmit = async (form) => {
     form.preventDefault();
     const product = {
@@ -76,10 +80,11 @@ function App() {
             />
           </label>
           {!loading && <button>Enviar</button>}
-          {loading && (<button disabled>Aguarde</button>)}
+          {loading && <button disabled>Aguarde</button>}
         </form>
       </div>
       {loading && <p>Carregando dados...</p>}
+      {error && <p>{error}</p>}
       {items && !loading && (
         <table>
           <thead>
@@ -87,6 +92,7 @@ function App() {
               <th>ID</th>
               <th>Nome</th>
               <th>Preço</th>
+              <th>Função</th>
             </tr>
           </thead>
           <tbody>
@@ -95,6 +101,9 @@ function App() {
                 <td>{product.id}</td>
                 <td>{product.name}</td>
                 <td>{product.price}</td>
+                <td>
+                  <button type="button" onClick={() => handleDelete(product.id)}>Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>

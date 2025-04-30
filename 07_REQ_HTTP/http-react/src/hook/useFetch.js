@@ -5,28 +5,43 @@ export const useFetch = (url) => {
   const [config, setConfig] = useState(null);
   const [method, setMethod] = useState(null);
   const [callFetch, setCallFetch] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [idProduct, setIdProduct] = useState("");
 
-  const httpConfig = (data, method) => {
+  const httpConfig = (data, method, id=null) => {
     if (method === "POST") {
       setConfig({
         method,
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data)
-      })
-      setMethod(method)
+        body: JSON.stringify(data),
+      });
+      setMethod(method);
+    } else if (method === "DELETE") {
+      setConfig({
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setIdProduct(id)
+      setMethod(method);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true)
-      const res = await fetch(url);
-      const json = await res.json();
-      setData(json);
-      setLoading(false)
+      setLoading(true);
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        setData(json);
+      } catch (error) {
+        setError("Parece que deu erro na hora de pegar os dados");
+      }
+      setLoading(false);
     };
     fetchData();
   }, [url, callFetch]);
@@ -38,10 +53,15 @@ export const useFetch = (url) => {
         const res = await fetch(...fetchOptions);
         const json = await res.json();
         setCallFetch(json);
+      } else if (method == "DELETE") {
+        let fetchOptions = [`${url}/${idProduct}`, config];
+        const res = await fetch(...fetchOptions);
+        const json = await res.json();
+        setCallFetch(json);
       }
     };
-    httpRequest()
+    httpRequest();
   }, [config, method, url]);
 
-  return { data, httpConfig, loading };
+  return { data, httpConfig, loading, error };
 };
