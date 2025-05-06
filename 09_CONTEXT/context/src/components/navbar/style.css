@@ -1,0 +1,42 @@
+/* NavBar Container */
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #2c3e50;
+}
+
+/* Base Link Style */
+.nav-link {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* Hover State */
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Active Link Style */
+.nav-link.active {
+  background: #3498db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: Add a subtle indicator for active link */
+.nav-link.active::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #ecf0f1;
+  margin-top: 0.5rem;
+}
