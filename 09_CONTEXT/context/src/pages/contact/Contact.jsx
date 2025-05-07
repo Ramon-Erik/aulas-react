@@ -1,6 +1,11 @@
+import { useTitleColorContext } from "../../hook/useTitleColorContext"
+
 const Contact = () => {
+const color = useTitleColorContext()
   return (
-    <div>Contact</div>
+    <>
+    <h2 style={color}>Contact</h2>
+    </>
   )
 }
 
